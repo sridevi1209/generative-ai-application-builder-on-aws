@@ -25,4 +25,50 @@ and limitations under the License.
         <div id="root"></div>
         <script type="module" src="/src/index.jsx"></script>
     </body>
+
+  <div id="feedback-container">
+  <button id="thumbs-up">👍</button>
+  <button id="thumbs-down">👎</button>
+  <textarea id="feedback-text" placeholder="Enter your feedback here"></textarea>
+  <button id="submit-feedback">Submit Feedback</button>
+</div>
+
+<script>
+document.getElementById('submit-feedback').addEventListener('click', function() {
+  const thumbsUp = document.getElementById('thumbs-up').classList.contains('selected');
+  const thumbsDown = document.getElementById('thumbs-down').classList.contains('selected');
+  const feedbackText = document.getElementById('feedback-text').value;
+
+  fetch('/api/feedback', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      thumbsUp: thumbsUp,
+      thumbsDown: thumbsDown,
+      feedbackText: feedbackText
+    }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Feedback submitted successfully:', data);
+    // Clear the form or show a success message
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+});
+
+// Add click handlers for thumbs up/down buttons to toggle 'selected' class
+document.getElementById('thumbs-up').addEventListener('click', function() {
+  this.classList.toggle('selected');
+  document.getElementById('thumbs-down').classList.remove('selected');
+});
+
+document.getElementById('thumbs-down').addEventListener('click', function() {
+  this.classList.toggle('selected');
+  document.getElementById('thumbs-up').classList.remove('selected');
+});
+</script>
 </html>
